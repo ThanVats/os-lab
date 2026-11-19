@@ -43,7 +43,6 @@ main(int argc, char *argv[])
     fprintf(2, "pingpong: fork failed\n");
     exit(1);
   }
-
   if (pid == 0) {
     // ---- child ----
     close(p2c[1]); // the child only reads from p2c
@@ -51,24 +50,24 @@ main(int argc, char *argv[])
     int x = 0;
 
     // TODO 1: read the number from the parent into x.
-
+	read(p2c[0], &x, sizeof(x));
     printf("%d: received ping %d\n", getpid(), x);
     x = x + 1;
 
     // TODO 2: write x back to the parent.
+write(c2p[1], &x, sizeof(x));
 
     exit(0);
   }
-
   // ---- parent ----
   close(p2c[0]); // the parent only writes to p2c
   close(c2p[1]); // and only reads from c2p
   int y = 0;
 
-  // TODO 3: write n to the child.
-
+  // TODO 3: writ n to the child.
+	write(p2c[1], &n, sizeof(n));
   // TODO 4: read the child's answer into y.
-
+read(c2p[0], &y, sizeof(y));
   wait(0);
   printf("%d: received pong %d\n", getpid(), y);
   exit(0);
